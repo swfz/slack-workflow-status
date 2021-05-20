@@ -82,7 +82,7 @@ async function main(){
     repo: context.repo.repo,
     run_id: run_id
   })
-  const workflow_name: string = (workflow_run.data as patchedActionsGetWorkflowRunResponse).name;
+  const workflow_name: string = (workflow_run.data as patchedActionsGetWorkflowRunResponse)['name'];
   const event: string = workflow_run.data.event;
   // Fetch workflow job information
   const jobs_response = await github.request(workflow_run.data.jobs_url)

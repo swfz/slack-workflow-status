@@ -3399,7 +3399,7 @@ async function main() {
         repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
         run_id: run_id
     });
-    const workflow_name = workflow_run.data.name;
+    const workflow_name = workflow_run.data['name'];
     const event = workflow_run.data.event;
     // Fetch workflow job information
     const jobs_response = await github.request(workflow_run.data.jobs_url);
