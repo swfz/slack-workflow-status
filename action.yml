@@ -27,6 +27,9 @@ inputs:
     descrtiption: 'Should the slack notification include individual job status and run times'
     required: true
     default: true
+  run_id:
+    descrtiption: 'specified workflow run_id'
+    required: false
 runs:
   using: 'node12'
   main: 'dist/index.js'
