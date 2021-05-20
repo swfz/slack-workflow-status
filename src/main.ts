@@ -68,6 +68,7 @@ async function main(){
   // Collect Environment Variables
   const workflow_name: string = process.env.GITHUB_WORKFLOW as string
   const run_id: number = core.getInput('run_id') ? Number(core.getInput('run_id')) : Number(process.env.GITHUB_RUN_ID)
+  console.log('run_id: ', run_id);
   const actor: string = process.env.GITHUB_ACTOR as string
   const event: string = process.env.GITHUB_EVENT_NAME as string
   const ref: string = process.env.GITHUB_REF as string
