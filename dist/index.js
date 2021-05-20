@@ -3385,11 +3385,9 @@ async function main() {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setSecret(github_token);
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setSecret(webhook_url);
     // Collect Environment Variables
-    const workflow_name = process.env.GITHUB_WORKFLOW;
     const run_id = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('run_id') ? Number(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput('run_id')) : Number(process.env.GITHUB_RUN_ID);
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setOutput('run_id', run_id);
     const actor = process.env.GITHUB_ACTOR;
-    const event = process.env.GITHUB_EVENT_NAME;
     const ref = process.env.GITHUB_REF;
     const branch = ref.substr(ref.lastIndexOf('/') + 1);
     // Auth github with octokit module
@@ -3401,6 +3399,8 @@ async function main() {
         repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
         run_id: run_id
     });
+    const workflow_name = workflow_run.data.name;
+    const event = workflow_run.data.event;
     // Fetch workflow job information
     const jobs_response = await github.request(workflow_run.data.jobs_url);
     // Build Job Data Fields and Workflow Status

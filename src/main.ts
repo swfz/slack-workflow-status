@@ -14,7 +14,7 @@
 import * as core from '@actions/core'
 import {context, GitHub} from '@actions/github'
 import * as request from 'request-promise-native'
-
+import {Octokit} from '@octokit/rest';
 
 interface SlackPayloadBody {
     channel?: string,
@@ -49,6 +49,8 @@ interface SlackAttachmentFields {
   title?: string
 }
 
+type patchedActionsGetWorkflowRunResponse = Octokit.ActionsGetWorkflowRunResponse & {name: string};
+
 process.on('unhandledRejection', handleError)
 main().catch(handleError)
 
@@ -66,11 +68,9 @@ async function main(){
   core.setSecret(github_token)
   core.setSecret(webhook_url)
   // Collect Environment Variables
-  const workflow_name: string = process.env.GITHUB_WORKFLOW as string
   const run_id: number = core.getInput('run_id') ? Number(core.getInput('run_id')) : Number(process.env.GITHUB_RUN_ID)
   core.setOutput('run_id', run_id)
   const actor: string = process.env.GITHUB_ACTOR as string
-  const event: string = process.env.GITHUB_EVENT_NAME as string
   const ref: string = process.env.GITHUB_REF as string
   const branch: string = ref.substr(ref.lastIndexOf('/') + 1)
   // Auth github with octokit module
@@ -82,6 +82,8 @@ async function main(){
     repo: context.repo.repo,
     run_id: run_id
   })
+  const workflow_name: string = (workflow_run.data as patchedActionsGetWorkflowRunResponse).name;
+  const event: string = workflow_run.data.event;
   // Fetch workflow job information
   const jobs_response = await github.request(workflow_run.data.jobs_url)
 
