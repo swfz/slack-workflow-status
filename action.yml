@@ -30,6 +30,11 @@ inputs:
   run_id:
     descrtiption: 'specified workflow run_id'
     required: false
+
+outputs:
+  run_id:
+    description: 'run_id'
+
 runs:
   using: 'node12'
   main: 'dist/index.js'
