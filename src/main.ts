@@ -74,12 +74,17 @@ async function main(): Promise<void> {
   const run_id = core.getInput('workflow_run')
     ? Number(context.payload.workflow_run.id)
     : Number(context.runId)
+
+  core.debug(`${run_id}`)
+
   // Fetch workflow run data
   const {data: workflow_run} = await octokit.actions.getWorkflowRun({
     owner: context.repo.owner,
     repo: context.repo.repo,
     run_id
   })
+
+  core.debug(JSON.stringify(workflow_run))
 
   // Fetch workflow job information
   const {data: jobs_response} = await octokit.actions.listJobsForWorkflowRun({
@@ -88,9 +93,13 @@ async function main(): Promise<void> {
     run_id
   })
 
+  core.debug(JSON.stringify(jobs_response))
+
   const completed_jobs = jobs_response.jobs.filter(
     job => job.status === 'completed'
   )
+
+  core.debug(JSON.stringify(completed_jobs))
 
   // Configure slack attachment styling
   let workflow_color // can be good, danger, warning or a HEX colour (#00FF00)
@@ -151,6 +160,8 @@ async function main(): Promise<void> {
     }
   })
 
+  core.debug(JSON.stringify(job_fields))
+
   // Payload Formatting Shortcuts
   const workflow_duration = compute_duration({
     start: new Date(workflow_run.created_at),
@@ -165,6 +176,9 @@ async function main(): Promise<void> {
   const workflow_name = core.getInput('workflow_run')
     ? context.payload.workflow_run.name
     : context.workflow
+
+  core.debug(event_name)
+  core.debug(workflow_name)
 
   // Example: Success: AnthonyKinson's `push` on `master` for pull_request
   let status_string = `${workflow_msg} ${context.actor}'s \`${event_name}\` on \`${branch_url}\``

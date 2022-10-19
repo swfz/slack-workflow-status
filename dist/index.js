@@ -12934,19 +12934,23 @@ function main() {
         const run_id = core.getInput('workflow_run')
             ? Number(github_1.context.payload.workflow_run.id)
             : Number(github_1.context.runId);
+        core.debug(`${run_id}`);
         // Fetch workflow run data
         const { data: workflow_run } = yield octokit.actions.getWorkflowRun({
             owner: github_1.context.repo.owner,
             repo: github_1.context.repo.repo,
             run_id
         });
+        core.debug(JSON.stringify(workflow_run));
         // Fetch workflow job information
         const { data: jobs_response } = yield octokit.actions.listJobsForWorkflowRun({
             owner: github_1.context.repo.owner,
             repo: github_1.context.repo.repo,
             run_id
         });
+        core.debug(JSON.stringify(jobs_response));
         const completed_jobs = jobs_response.jobs.filter(job => job.status === 'completed');
+        core.debug(JSON.stringify(completed_jobs));
         // Configure slack attachment styling
         let workflow_color; // can be good, danger, warning or a HEX colour (#00FF00)
         let workflow_msg;
@@ -12998,6 +13002,7 @@ function main() {
                 value: `${job_status_icon} <${job.html_url}|${job.name}> (${job_duration})`
             };
         }));
+        core.debug(JSON.stringify(job_fields));
         // Payload Formatting Shortcuts
         const workflow_duration = compute_duration({
             start: new Date(workflow_run.created_at),
@@ -13012,6 +13017,8 @@ function main() {
         const workflow_name = core.getInput('workflow_run')
             ? github_1.context.payload.workflow_run.name
             : github_1.context.workflow;
+        core.debug(event_name);
+        core.debug(workflow_name);
         // Example: Success: AnthonyKinson's `push` on `master` for pull_request
         let status_string = `${workflow_msg} ${github_1.context.actor}'s \`${event_name}\` on \`${branch_url}\``;
         // Example: Workflow: My Workflow #14 completed in `1m 30s`
