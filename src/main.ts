@@ -71,7 +71,8 @@ async function main(): Promise<void> {
   // Auth github with octokit module
   const octokit = getOctokit(github_token)
 
-  const run_id = core.getInput('workflow_run')
+  const from_workflow_run = core.getInput('workflow_run') === 'true'
+  const run_id = from_workflow_run
     ? Number(context.payload.workflow_run.id)
     : Number(context.runId)
 
@@ -170,7 +171,6 @@ async function main(): Promise<void> {
   const repo_url = `<${workflow_run.repository.html_url}|*${workflow_run.repository.full_name}*>`
   const branch_url = `<${workflow_run.repository.html_url}/tree/${workflow_run.head_branch}|*${workflow_run.head_branch}*>`
   const workflow_run_url = `<${workflow_run.html_url}|#${workflow_run.run_number}>`
-  const from_workflow_run = core.getInput('workflow_run') === 'true'
   const event_name = from_workflow_run
     ? context.payload.workflow_run.event
     : context.eventName
